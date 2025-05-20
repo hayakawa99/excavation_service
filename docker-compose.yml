@@ -1,0 +1,30 @@
+version: '3.8'
+
+services:
+  app:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "18080:8080" # ホスト側のポートとコンテナ側のポート
+    volumes:
+      - .:/app # 開発用ボリュームマウント
+    depends_on:
+      - db
+    environment:
+      DATABASE_URL: postgres://postgres:goexcavation@db:5432/excavation?sslmode=disable
+      TEST_DATABASE_URL: postgres://postgres:goexcavation@db:5432/excavation?sslmode=disable
+
+  db:
+    image: postgres:15
+    environment:
+      POSTGRES_USER: postgres
+      POSTGRES_PASSWORD: goexcavation
+      POSTGRES_DB: excavation
+    ports:
+      - "5435:5432"
+    volumes:
+      - db-data:/var/lib/postgresql/data
+
+volumes:
+  db-data:
